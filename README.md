@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nawab Textile — brand showcase (client demo)
 
-## Getting Started
+A luxury showcase and lead-generation site for Nawab's three houses: **Perfumes**, **Shawls** and **Unstitched Fabrics**.
+There is no cart or checkout. Every call to action opens WhatsApp with a pre-filled message.
 
-First, run the development server:
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Motion.
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Before going live
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **WhatsApp number.** Create `.env.local`:
+   ```
+   NEXT_PUBLIC_WHATSAPP_NUMBER=923001234567   # digits only, international format
+   NEXT_PUBLIC_SITE_URL=https://www.example.com
+   ```
+   Until the number is set, WhatsApp links open WhatsApp's share sheet with the message pre-filled, so the demo never dials a wrong number.
+2. **Copy to confirm.** Scent notes, shawl craft labels and fabric specs in `lib/catalog.ts` are presentation copy.
+   Product names, bottle sizes and collection names come from the client's own packaging.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Swapping photography after the shoot
 
-## Learn More
+Every image is a plain file in `public/images/`. Replace a file with the same name, or change the path in `lib/catalog.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+| Folder | What it is | Source |
+| --- | --- | --- |
+| `perfumes/` | Hassan, Lehar, Janoon and the trio | **Client** |
+| `collections/` | Signature boxes and the shade card | **Client** |
+| `brand/` | Emblem and monogram pattern, generated from the client logo | **Client** |
+| `editorial/` | Shawl portraits, suiting, tailor, heritage scenes | Unsplash / Pexels, temporary |
+| `textures/` | Close-ups that "weave" the shawls on the rail | Unsplash, temporary |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Hero pillars.** Images are statically imported in `components/sections/hero-pillars.tsx` for blur placeholders. Keep the file names or update the imports.
+- **Shawl rail.** Shawls are drawn as cloth (texture, palla border and fringe) by `components/ui/shawl-rail.tsx`. After the shoot, add transparent cut-outs (200 × 310 canvas) through the `image`, `backImage` and `sideImage` fields of a rail item to show real photos on the hangers.
+- **Fabric inspector.** `textures/suiting-neutral.jpg` is a neutral grey weave, tinted live to each shade's hex.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Structure
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/                 layout (fonts, metadata), page, global design tokens
+components/site/     navbar, footer, floating WhatsApp button
+components/sections/ hero-pillars, perfume-showcase, shawl-gallery, fabric-atelier, heritage, inquiry
+components/ui/       shawl-rail (adapted from 21st.dev Product Rail Gallery), arch-frame, reveal, icons
+lib/                 catalog data, site config, WhatsApp link builder
+```

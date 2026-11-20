@@ -1,26 +1,226 @@
 @import "tailwindcss";
 
+/* Side-by-side layouts on short laptop screens (e.g. 1280×720, 1366×768) tighten up to fit one view. */
+@custom-variant split-short (@media (min-width: 1280px) and (max-height: 820px));
+
+/* ------------------------------------------------------------------
+   NAWAB — design tokens
+   Palette lifted from the emblem: onyx field, brushed champagne-silver
+   lettering and the antique-gold inner ring.
+------------------------------------------------------------------- */
+@theme {
+  --color-onyx-950: #08080a;
+  --color-onyx-900: #0e0e10;
+  --color-onyx-850: #131315;
+  --color-onyx-800: #19191c;
+  --color-onyx-700: #232327;
+  --color-onyx-600: #2f2f34;
+
+  --color-champagne-50: #f7f4ed;
+  --color-champagne-100: #ede7da;
+  --color-champagne-200: #ddd5c4;
+  --color-champagne-300: #c8c0ad;
+  --color-champagne-400: #a9a192;
+  --color-champagne-500: #8b8477;
+
+  --color-gold-100: #f4e8c7;
+  --color-gold-200: #ead6a2;
+  --color-gold-300: #dcc183;
+  --color-gold-400: #caa865;
+  --color-gold-500: #b8924b;
+  --color-gold-600: #94733a;
+  --color-gold-700: #6f5527;
+
+  --color-ivory-50: #fcfaf5;
+  --color-ivory-100: #f5f1e8;
+  --color-ivory-200: #ece5d6;
+  --color-ivory-300: #ddd3bf;
+  --color-ivory-400: #c8bca4;
+
+  --color-ink-950: #121010;
+  --color-ink-900: #1b1815;
+  --color-ink-700: #39332c;
+  --color-ink-600: #4a433a;
+  --color-ink-500: #5e564b;
+
+  --color-walnut-950: #0f0c0a;
+  --color-walnut-900: #17120f;
+  --color-walnut-800: #211a15;
+  --color-walnut-700: #2d241d;
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-silk: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --animate-fade-in: fade-in 0.5s var(--ease-luxe) both;
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-shine: shine 3.2s var(--ease-silk) infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes shine {
+    0% { transform: translateX(-120%) skewX(-18deg); }
+    55%, 100% { transform: translateX(220%) skewX(-18deg); }
+  }
+}
+
+/* Semantic tokens. Sections re-scope these (see .theme-*) so shared
+   components — e.g. the 21st.dev rail — inherit the right surface. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-onyx-900);
+  --foreground: var(--color-champagne-100);
+  --card: var(--color-onyx-800);
+  --card-foreground: var(--color-champagne-100);
+  --muted: var(--color-onyx-700);
+  --muted-foreground: var(--color-champagne-400);
+  --border: color-mix(in oklab, var(--color-champagne-100) 14%, transparent);
+  --ring: var(--color-gold-400);
+  --accent: var(--color-gold-400);
+}
+
+.theme-ivory {
+  --background: var(--color-ivory-100);
+  --foreground: var(--color-ink-900);
+  --card: var(--color-ivory-50);
+  --card-foreground: var(--color-ink-900);
+  --muted: var(--color-ivory-200);
+  --muted-foreground: var(--color-ink-500);
+  --border: color-mix(in oklab, var(--color-ink-900) 14%, transparent);
+  --ring: var(--color-gold-600);
+  --accent: var(--color-gold-600);
+}
+
+.theme-walnut {
+  --background: var(--color-walnut-900);
+  --foreground: var(--color-champagne-100);
+  --card: var(--color-walnut-800);
+  --card-foreground: var(--color-champagne-100);
+  --muted: var(--color-walnut-700);
+  --muted-foreground: var(--color-champagne-400);
+  --border: color-mix(in oklab, var(--color-champagne-100) 14%, transparent);
+  --ring: var(--color-gold-400);
+  --accent: var(--color-gold-400);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-accent: var(--accent);
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), "Times New Roman", serif;
+  --font-caps: var(--font-cinzel), var(--font-cormorant), serif;
+  --font-urdu: var(--font-nastaliq), serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    color-scheme: dark;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  body {
+    background: var(--color-onyx-900);
+    color: var(--color-champagne-100);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern", "liga";
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-gold-400) 45%, transparent);
+    color: var(--color-champagne-50);
+  }
+  section[id] {
+    scroll-margin-top: 4.5rem;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* Brushed-metal lettering, like the emblem's raised silver type. */
+  .text-metal {
+    background: linear-gradient(176deg, #fbf8f1 0%, #d9d2c2 38%, #a59d8c 62%, #ece6d8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gilt {
+    background: linear-gradient(170deg, #f4e8c7 0%, #caa865 45%, #94733a 75%, #e3cb91 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hairline-gold {
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-gold-400) 70%, transparent), transparent);
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, black 55%, transparent);
+  }
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Preloader entry flow (components/site/preloader.tsx)                */
+/* Active only while #nawab-preloader is mounted.                      */
+/* ------------------------------------------------------------------ */
+
+/* Lock scroll without a layout shift: the scrollbar's gutter stays reserved. */
+html:has(#nawab-preloader[data-phase="loading"]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+  /* the reserved gutter matches the curtain's edge */
+  background: #060607;
+}
+
+/* The hero briefly scales past the viewport while it settles. */
+html:has(#nawab-preloader[data-phase="exit"]) {
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(#nawab-preloader[data-phase="loading"]) #top {
+    transform: scale(1.06);
+  }
+  html:has(#nawab-preloader[data-phase="exit"]) #top {
+    transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1) 60ms;
+  }
+  html:has(#nawab-preloader[data-phase="loading"]) body > header {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  html:has(#nawab-preloader[data-phase="exit"]) body > header {
+    transition:
+      opacity 0.7s ease 0.4s,
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.4s;
+  }
 }
